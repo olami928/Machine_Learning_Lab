@@ -1,0 +1,17 @@
+numpy
+pandas
+scipy
+scikit-learn
+torch
+torchvision
+torchaudio
+tensorflow
+keras
+transformers
+openai
+langchain
+matplotlib
+seaborn
+opencv-python
+streamlit
+
