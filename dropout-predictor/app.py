@@ -56,6 +56,28 @@ FIELD_LABELS = {
     "Curricular units 2nd sem (approved)": "Second-semester units approved",
 }
 
+OCCUPATION_FIELDS = {"Mother's occupation", "Father's occupation"}
+OCCUPATION_CODES = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 90, 99, 101, 102, 103, 112, 114,
+    121, 122, 123, 124, 125, 131, 132, 134, 135, 141, 143, 144, 151, 152,
+    153, 154, 161, 163, 171, 172, 173, 174, 175, 181, 182, 183, 191, 192,
+    193, 194, 195,
+]
+
+OCCUPATION_LABELS = {
+    0: "Student",
+    1: "Legislative or executive representative",
+    2: "Intellectual or scientific professional",
+    3: "Technician or associate professional",
+    4: "Administrative staff",
+    5: "Personal services, security, or sales",
+    6: "Agriculture, fisheries, or forestry worker",
+    7: "Industry, construction, or craft worker",
+    8: "Machine operator or assembler",
+    9: "Unskilled worker",
+    10: "Armed forces professional",
+}
+
 
 def category_options(field, feature_columns, default):
     prefix = f"{field}_"
@@ -72,6 +94,10 @@ def number_input_for(field, default):
     if "units" in field or "evaluations" in field or "occupation" in field:
         return st.number_input(label, value=float(default), min_value=0.0, step=1.0)
     return st.number_input(label, value=float(default), step=0.01, format="%.3f")
+
+
+def occupation_label(code):
+    return f"{OCCUPATION_LABELS.get(code, f'Occupation code {code}')} ({code})"
 
 
 def build_input_row(values, artifacts):
@@ -142,7 +168,7 @@ with st.form("prediction_form"):
         with profile_cols[index % 3]:
             if field in artifacts["categorical_cols"]:
                 default = artifacts["categorical_defaults"][field]
-                options = category_options(field, artifacts["feature_columns"], default)
+                options = ["Yes", "No"] if field == "Displaced" else category_options(field, artifacts["feature_columns"], default)
                 values[field] = st.selectbox(FIELD_LABELS.get(field, field), options, index=options.index(default))
             else:
                 values[field] = number_input_for(field, artifacts["numeric_defaults"][field])
@@ -172,7 +198,16 @@ with st.form("prediction_form"):
             if field in values or field in {"Course", "Grade trend", "1st sem approval ratio", "2nd sem approval ratio", "Financial risk score"}:
                 continue
             with extra_cols[index % 3]:
-                values[field] = number_input_for(field, artifacts["numeric_defaults"][field])
+                if field in OCCUPATION_FIELDS:
+                    default = int(artifacts["numeric_defaults"][field])
+                    values[field] = st.selectbox(
+                        field,
+                        OCCUPATION_CODES,
+                        index=OCCUPATION_CODES.index(default),
+                        format_func=occupation_label,
+                    )
+                else:
+                    values[field] = number_input_for(field, artifacts["numeric_defaults"][field])
 
     submitted = st.form_submit_button("Assess dropout risk", type="primary", use_container_width=True)
 
