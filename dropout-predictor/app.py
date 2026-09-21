@@ -78,9 +78,10 @@ def build_input_row(values, artifacts):
     categorical = artifacts["categorical_cols"]
     numeric = artifacts["numeric_cols"]
     feature_columns = artifacts["feature_columns"]
+    derived = {"Course", "Grade trend", "1st sem approval ratio", "2nd sem approval ratio", "Financial risk score"}
 
     row = {field: values[field] for field in categorical}
-    row.update({field: values[field] for field in numeric})
+    row.update({field: values[field] for field in numeric if field not in derived})
     row["Course"] = float(COURSE_CODES.get(values["Course_Nigerian"], artifacts["numeric_defaults"]["Course"]))
 
     row["Grade trend"] = row["Curricular units 2nd sem (grade)"] - row["Curricular units 1st sem (grade)"]
