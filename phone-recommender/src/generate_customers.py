@@ -7,6 +7,7 @@ a realistic distribution of budgets/priorities/brand preferences to learn from.
 
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 np.random.seed(42)
 
@@ -81,8 +82,9 @@ def generate():
 
 if __name__ == "__main__":
     df = generate()
-    df.to_csv("data/synthetic_customer_preferences.csv", index=False)
-    print(f"Generated {len(df)} synthetic customers -> data/synthetic_customer_preferences.csv")
+    output_path = Path(__file__).resolve().parents[1] / "data" / "synthetic_customer_preferences.csv"
+    df.to_csv(output_path, index=False)
+    print(f"Generated {len(df)} synthetic customers -> {output_path}")
     print(df.head())
     print("\nBudget distribution:")
     print(df["budget_ngn"].describe())

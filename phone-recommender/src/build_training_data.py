@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, "src")
 
 import pandas as pd
+from pathlib import Path
 import numpy as np
 from data_processing import load_catalog
 from scoring import (
@@ -92,9 +93,10 @@ def build_training_table(catalog: pd.DataFrame, customers: pd.DataFrame) -> pd.D
 
 if __name__ == "__main__":
     catalog = load_catalog()
-    customers = pd.read_csv("data/synthetic_customer_preferences.csv")
+    project_dir = Path(__file__).resolve().parents[1]
+    customers = pd.read_csv(project_dir / "data" / "synthetic_customer_preferences.csv")
     table = build_training_table(catalog, customers)
-    table.to_csv("data/training_data.csv", index=False)
+    table.to_csv(project_dir / "data" / "training_data.csv", index=False)
     print(f"Built {len(table):,} training rows from {len(customers)} customers x "
           f"{len(catalog)} phones (in-budget pairs only).")
     print(table[["budget_ngn", "price_ngn", "target_score"]].describe())

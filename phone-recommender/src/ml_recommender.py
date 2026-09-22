@@ -10,6 +10,7 @@ swapping the ranking model never breaks the "why it matches" text.
 import joblib
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from scoring import (
     budget_score, camera_score, battery_score, storage_score,
     performance_score, brand_score, pd_isna,
@@ -19,7 +20,8 @@ from recommender import _explain, _catalog_bounds, DIVERSITY_SCORE_GAP
 
 PRIORITY_ORDINAL = {"low": 0, "medium": 1, "high": 2}
 
-_bundle = joblib.load("src/ml_model.joblib")
+MODEL_PATH = Path(__file__).resolve().parent / "ml_model.joblib"
+_bundle = joblib.load(MODEL_PATH)
 MODEL = _bundle["model"]
 MODEL_COLUMNS = _bundle["columns"]
 

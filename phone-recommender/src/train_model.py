@@ -18,6 +18,7 @@ section 14) without changing the rest of the pipeline.
 import joblib
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GroupKFold
 from sklearn.metrics import mean_absolute_error, r2_score
@@ -38,7 +39,8 @@ def prepare_features(df: pd.DataFrame):
 
 
 def main():
-    df = pd.read_csv("data/training_data.csv")
+    project_dir = Path(__file__).resolve().parents[1]
+    df = pd.read_csv(project_dir / "data" / "training_data.csv")
     X = prepare_features(df)
     y = df["target_score"]
 
@@ -68,8 +70,9 @@ def main():
     print("\nTop 10 feature importances:")
     print(importances.head(10).round(3))
 
-    joblib.dump({"model": model, "columns": list(X.columns)}, "src/ml_model.joblib")
-    print("\nSaved trained model -> src/ml_model.joblib")
+    model_path = project_dir / "src" / "ml_model.joblib"
+    joblib.dump({"model": model, "columns": list(X.columns)}, model_path)
+    print(f"\nSaved trained model -> {model_path}")
 
 
 if __name__ == "__main__":

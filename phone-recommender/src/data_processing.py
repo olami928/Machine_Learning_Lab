@@ -7,11 +7,12 @@ explicitly in scoring rather than being silently imputed.
 
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
-CATALOG_PATH = "data/phone_catalog_ng.csv"
+CATALOG_PATH = Path(__file__).resolve().parents[1] / "data" / "phone_catalog_ng.csv"
 
 
-def load_catalog(path: str = CATALOG_PATH) -> pd.DataFrame:
+def load_catalog(path: str | Path = CATALOG_PATH) -> pd.DataFrame:
     df = pd.read_csv(path)
 
     # Drop phones with no verified price — can't score budget fit without one.
