@@ -1,8 +1,13 @@
 import pickle
+from pathlib import Path
+
 import streamlit as st
 import numpy as np
 
-kmeans = pickle.load(open('kmeans.pkl', 'rb'))
+MODEL_PATH = Path(__file__).resolve().parent / 'kmeans.pkl'
+
+with MODEL_PATH.open('rb') as model_file:
+    kmeans = pickle.load(model_file)
 
 
 def clustering(age, avg_spend, visit_per_week, promotion_interest):
